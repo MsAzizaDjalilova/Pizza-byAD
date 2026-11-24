@@ -8,7 +8,25 @@ if (!config.db.url) {
   logger.warn('DATABASE_URL is not set — database calls will fail until it is configured');
 }
 
-const sequelize = new Sequelize(config.db.url || 'postgres://localhost:5432/blushslice', {
+/**
+ * Clean up a pasted Neon URL: trim spaces, add a missing scheme, and drop
+ * query params node-postgres doesn't understand (channel_binding) — SSL is set below.
+ */
+function cleanDbUrl(raw) {
+  let url = String(raw || '').trim().replace(/^["']|["']$/g, '');
+  if (!url) return 'postgres://localhost:5432/blushslice';
+  if (!/^postgres(ql)?:\/\//i.test(url)) url = `postgresql://${url.replace(/^\/+/, '')}`;
+  try {
+    const u = new URL(url);
+    u.searchParams.delete('channel_binding');
+    u.searchParams.delete('sslmode');
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
+const sequelize = new Sequelize(cleanDbUrl(config.db.url), {
   dialect: 'postgres',
   // Explicit driver so serverless bundlers (Vercel) include it
   dialectModule: require('pg'),

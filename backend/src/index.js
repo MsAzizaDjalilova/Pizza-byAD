@@ -32,8 +32,13 @@ async function main() {
 
   if (config.telegram.botToken) {
     if (config.telegram.publicApiUrl) {
-      await setupTelegram(config.telegram.publicApiUrl);
-      logger.info('Bot running in webhook mode');
+      // A bad token or a Telegram hiccup must not take the whole API down
+      try {
+        await setupTelegram(config.telegram.publicApiUrl);
+        logger.info('Bot running in webhook mode');
+      } catch (err) {
+        logger.error('Telegram webhook setup failed — check BOT_TOKEN. API keeps running.', { error: err });
+      }
     } else {
       try {
         await setupMenuButton();

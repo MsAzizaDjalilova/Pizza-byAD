@@ -1,0 +1,12 @@
+{
+  "name": "blush-slice-pizza",
+  "private": true,
+  "description": "Blush Slice Pizza — Telegram Mini App (frontend) + bot/API (backend). Deployed on Vercel.",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "build": "npm run build --prefix frontend",
+    "demo": "npm run demo --prefix backend"
+  }
+}

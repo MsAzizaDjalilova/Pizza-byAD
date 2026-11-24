@@ -1,0 +1,43 @@
+# Render Blueprint — backend (Express API + Telegram bot) for Blush Slice Pizza.
+# Render → New → Blueprint → pick this repo. Secrets marked `sync: false` are asked for in the dashboard.
+# Without DATABASE_URL + BOT_TOKEN the service starts in DEMO mode (menu works, payments simulated).
+services:
+  - type: web
+    name: blush-slice-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    region: frankfurt
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: DB_SSL
+        value: "true"
+      # Random secret for the Telegram webhook URL (generated once by Render)
+      - key: WEBHOOK_SECRET
+        generateValue: true
+      # ── fill these in the Render dashboard ──
+      - key: BOT_TOKEN
+        sync: false
+      - key: DATABASE_URL # NeonDB connection string
+        sync: false
+      - key: WEBAPP_URL # your Vercel URL, e.g. https://blush-slice.vercel.app
+        sync: false
+      - key: CORS_ORIGINS # same Vercel URL
+        sync: false
+      - key: ADMIN_CHAT_ID
+        sync: false
+      - key: SUPPORT_USERNAME
+        sync: false
+      - key: CLICK_PROVIDER_TOKEN
+        sync: false
+      - key: PAYME_PROVIDER_TOKEN
+        sync: false
+      - key: CRYPTOPAY_TOKEN
+        sync: false

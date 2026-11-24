@@ -33,25 +33,36 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/*
+ * Telegram Mini Apps: if the page (body) scrolls, Telegram treats a downward swipe
+ * as "collapse the app" and scrolling breaks. So the document never scrolls —
+ * #root is the app's own scroll container (see .app-scroll in App.jsx).
+ */
+:root {
+  --app-h: var(--tg-viewport-stable-height, 100dvh);
+}
+
 html,
 body {
   margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
   background: var(--bg);
   color: var(--berry);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
-  overscroll-behavior-y: none;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100vh;
-  min-height: var(--tg-viewport-stable-height, 100vh);
 }
 
 #root {
-  position: relative;
+  position: fixed;
+  inset: 0;
   z-index: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
 }
 
 button {
@@ -440,7 +451,7 @@ main {
 }
 
 .splash {
-  min-height: 100vh;
+  min-height: var(--app-h);
   display: grid;
   place-content: center;
   justify-items: center;
@@ -1411,7 +1422,7 @@ p.eyebrow {
 
 .onboarding {
   position: relative;
-  min-height: 100vh;
+  min-height: var(--app-h);
   display: flex;
   flex-direction: column;
   padding: calc(18px + var(--safe-top)) 24px calc(24px + var(--safe-bottom));
@@ -1903,7 +1914,7 @@ p.eyebrow {
 }
 
 .success {
-  min-height: 100vh;
+  min-height: var(--app-h);
   display: flex;
   flex-direction: column;
   align-items: center;

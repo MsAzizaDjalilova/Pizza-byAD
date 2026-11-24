@@ -61,7 +61,8 @@ function Shell({ catalog, session, setSession }) {
   }, []);
 
   useEffect(() => {
-    window.scrollTo({ top: 0 });
+    // #root is the scroll container (see styles.css), not the window
+    document.getElementById('root')?.scrollTo({ top: 0 });
   }, [screen]);
 
   const finishOnboarding = () => {
